@@ -1,9 +1,14 @@
-import {Link} from "react-router";
+import { Link } from "react-router";
 import ScoreCircle from "./ScoreCircle";
-import { useEffect, useState } from "react";
 
-const ResumeCard = ({ resume: {id, companyName, jobTitle, feedback, imagePath } }: { resume: Resume }) => {
-    const [resumeUrl, setResumeUrl]= useState(``);
+const ResumeCard = ({ resume: { id, companyName, jobTitle, feedback, imagePath } }: { resume: Resume }) => {
+    const fallbackSrc = "/images/pdf.png";
+
+    // normalize image path: allow absolute URLs or paths served from public/
+    const src = imagePath
+        ? (imagePath.startsWith("http") || imagePath.startsWith("/") ? imagePath : `/${imagePath}`)
+        : fallbackSrc;
+
     return (
         <Link to={`/resumes/${id}`} className="resume-card animate-in fade-in duration-1000">
             <div className="resume-card-header">
@@ -22,8 +27,9 @@ const ResumeCard = ({ resume: {id, companyName, jobTitle, feedback, imagePath } 
             <div className="gradient-border animate-in fade-in duration-1000">
                 <div className="w-full h-full">
                     <img
-                        src={imagePath}
+                        src={src}
                         alt="resume"
+                        onError={(e) => { (e.currentTarget as HTMLImageElement).src = fallbackSrc; }}
                         className="w-full h-[350px] max-sm:h-[200px] object-cover object-top" />
                 </div>
             </div>
