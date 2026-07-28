@@ -24,17 +24,19 @@ export default function Home() {
   }, [auth.isAuthenticated, navigate]);
 
   return (
-    <main className="bg-[url('/images/bg-main.svg')] bg-cover min-h-screen flex items-center justify-center">
+    <main className="min-h-screen bg-[url('/images/bg-main.svg')] bg-cover bg-center px-4 py-24 sm:px-6 lg:px-8">
       <Navbar />
 
-      <section className="main-section">
-        <div className="page-heading py-16">
-          <h1>RESUMYZER</h1>
-          <h2>Track Your Resume & Review Your Submissions With AI Powered Feedback.</h2>
+      <section className="main-section mx-auto max-w-7xl">
+        <div className="page-heading py-8 sm:py-12 lg:py-16">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl">RESUMYZER</h1>
+          <h2 className="max-w-2xl text-lg sm:text-xl lg:text-2xl">
+            Track your resume submissions and review them with AI-powered feedback.
+          </h2>
         </div>
 
         {resumes.length > 0 && (
-          <div className="resume-section">
+          <div className="resumes-section w-full">
             {resumes.map((resume) => (
               <ResumeCard key={resume.id} resume={resume} />
             ))}

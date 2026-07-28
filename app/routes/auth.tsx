@@ -20,16 +20,18 @@ const Auth = () => {
   }, [auth.isAuthenticated, navigate, next]);
 
   return (
-    <main className="bg-[url('/images/bg-auth.svg')] bg-cover min-h-screen flex items-center justify-center">
-      <div className="gradient-border shadow-lg">
-        <section className="flex flex-col gap-8 bg-white rounded-2xl p-10">
-          <div className="flex flex-col items-center gap-2 text-center">
-            <h1>Welcome</h1>
-            <h2>Log-In to Analyze That Resume</h2>
+    <main className="flex min-h-screen items-center justify-center bg-[url('/images/bg-auth.svg')] bg-cover bg-center px-4 py-10 sm:px-6">
+      <div className="gradient-border w-full max-w-xl shadow-xl">
+        <section className="flex flex-col gap-8 rounded-2xl bg-white p-8 sm:p-10">
+          <div className="flex flex-col items-center gap-3 text-center">
+            <h1 className="text-4xl sm:text-5xl">Welcome</h1>
+            <h2 className="text-lg sm:text-xl">
+              Log in to analyze your resume with AI-powered insights.
+            </h2>
           </div>
-          <div>
+          <div className="flex justify-center">
             {isLoading ? (
-              <button className="auth-button animate-pulse">
+              <button className="auth-button animate-pulse" disabled>
                 <p>Signing you in...</p>
               </button>
             ) : (

@@ -10,13 +10,13 @@ const ResumeCard = ({ resume: { id, companyName, jobTitle, feedback, imagePath }
         : fallbackSrc;
 
     return (
-        <Link to={`/resumes/${id}`} className="resume-card animate-in fade-in duration-1000">
+        <Link to={`/resumes/${id}`} className="resume-card transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl">
             <div className="resume-card-header">
                 <div className="flex flex-col gap-2">
-                    <h2 className="!text-black font-bold break-words">
+                    <h2 className="!text-black break-words text-xl font-semibold">
                         {companyName}
                     </h2>
-                    <h3 className="text-lg break-words text-gray-500">
+                    <h3 className="break-words text-base text-gray-500">
                         {jobTitle}
                     </h3>
                 </div>
@@ -24,13 +24,13 @@ const ResumeCard = ({ resume: { id, companyName, jobTitle, feedback, imagePath }
                     <ScoreCircle score={feedback.overallScore} />
                 </div>
             </div>
-            <div className="gradient-border animate-in fade-in duration-1000">
-                <div className="w-full h-full">
+            <div className="gradient-border overflow-hidden rounded-2xl">
+                <div className="w-full">
                     <img
                         src={src}
                         alt="resume"
                         onError={(e) => { (e.currentTarget as HTMLImageElement).src = fallbackSrc; }}
-                        className="w-full h-[350px] max-sm:h-[200px] object-cover object-top" />
+                        className="h-[300px] w-full rounded-xl object-cover object-top sm:h-[320px]" />
                 </div>
             </div>
         </Link>

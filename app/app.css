@@ -20,14 +20,19 @@
 
 html,
 body {
-  @apply bg-white;
+  @apply min-h-screen bg-white text-gray-900;
+}
+
+body {
+  @apply antialiased;
 }
 
 main {
-  @apply min-h-screen pt-10;
+  @apply min-h-screen;
 }
+
 h1 {
-  @apply max-sm:text-[3rem] text-6xl  text-gradient leading-tight xl:tracking-[-2px] font-semibold;
+  @apply max-sm:text-[3rem] text-6xl text-gradient leading-tight font-semibold xl:tracking-[-2px];
 }
 
 h2 {
@@ -38,15 +43,15 @@ label {
   @apply text-dark-200;
 }
 input {
-  @apply w-full p-4 inset-shadow rounded-2xl focus:outline-none bg-white;
+  @apply w-full rounded-2xl bg-white p-4 inset-shadow focus:outline-none;
 }
 
 textarea {
-  @apply w-full p-4 inset-shadow rounded-2xl focus:outline-none bg-white;
+  @apply w-full rounded-2xl bg-white p-4 inset-shadow focus:outline-none;
 }
 
 form {
-  @apply flex flex-col items-start gap-8 w-full;
+  @apply flex w-full flex-col items-start gap-8;
 }
 
 @layer components {
@@ -75,17 +80,17 @@ form {
     @apply primary-gradient rounded-full py-4 px-8 cursor-pointer w-[600px] max-md:w-full text-3xl font-semibold text-white;
   }
   .main-section {
-    @apply flex flex-col items-center gap-8 pt-12 max-sm:mx-2 mx-15 pb-5;
+    @apply mx-auto flex flex-col items-center gap-8 px-2 pb-8 pt-6 sm:px-0;
   }
   .page-heading {
-    @apply flex flex-col items-center gap-8 max-w-4xl text-center max-sm:gap-4;
+    @apply flex max-w-4xl flex-col items-center gap-4 text-center sm:gap-6;
   }
   .resumes-section {
-    @apply flex flex-wrap max-md:flex-col max-md:gap-4 gap-6 items-start max-md:items-center w-full max-w-[1850px] justify-evenly;
+    @apply flex w-full flex-wrap items-stretch justify-center gap-6 max-md:flex-col max-md:items-center;
   }
 
   .resume-card {
-    @apply flex flex-col gap-8 h-[560px] w-[350px] lg:w-[430px] xl:w-[490px] bg-white rounded-2xl p-4;
+    @apply flex h-full w-full max-w-[360px] flex-col gap-6 rounded-2xl bg-white p-4 shadow-sm sm:max-w-[390px] lg:max-w-[430px] xl:max-w-[490px];
   }
 
   .resume-card-header {
@@ -97,7 +102,7 @@ form {
   }
 
   .navbar {
-    @apply flex flex-row justify-between items-center bg-white rounded-full p-4 w-full px-10 max-w-[1200px] mx-auto;
+    @apply mx-auto flex w-full max-w-[1200px] flex-row items-center justify-between rounded-full bg-white/90 p-4 px-6 shadow-sm sm:px-10;
   }
 
   .score-badge {
