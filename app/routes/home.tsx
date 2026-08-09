@@ -1,48 +1,90 @@
-import Navbar from "~/components/Navbar";
 import type { Route } from "./+types/home";
-import { resumes } from "../../constants";
+import Navbar from "~/components/Navbar";
 import ResumeCard from "~/components/ResumeCard";
-import { useNavigate } from "react-router";
-import { usePuterStore } from "~/lib/puter";
-import { useEffect } from "react";
+import {usePuterStore} from "~/lib/puter";
+import {Link, useNavigate} from "react-router";
+import {useEffect, useState} from "react";
 
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "Resumyzer" },
-    { name: "description", content: "Get instant feedback on your resume with our AI-powered analysis." },
+    { name: "description", content: "Smart feedback for your dream job!" },
   ];
 }
 
 export default function Home() {
-  const { auth } = usePuterStore();
+  const { auth, isLoading, kv } = usePuterStore();
   const navigate = useNavigate();
+  const [resumes, setResumes] = useState<Resume[]>([]);
+  const [loadingResumes, setLoadingResumes] = useState(false);
 
   useEffect(() => {
-    if (!auth.isAuthenticated) {
-      navigate("/auth?next=/");
+    if (!isLoading && !auth.isAuthenticated) {
+      navigate('/auth?next=/');
     }
-  }, [auth.isAuthenticated, navigate]);
+  }, [isLoading, auth.isAuthenticated, navigate]);
 
-  return (
-    <main className="min-h-screen bg-[url('/images/bg-main.svg')] bg-cover bg-center px-4 py-24 sm:px-6 lg:px-8">
-      <Navbar />
+  useEffect(() => {
+    const loadResumes = async () => {
+      if (!auth.isAuthenticated) {
+        setResumes([]);
+        return;
+      }
 
-      <section className="main-section mx-auto max-w-7xl">
-        <div className="page-heading py-8 sm:py-12 lg:py-16">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl">RESUMYZER</h1>
-          <h2 className="max-w-2xl text-lg sm:text-xl lg:text-2xl">
-            Track your resume submissions and review them with AI-powered feedback.
-          </h2>
-        </div>
+      setLoadingResumes(true);
+      const resumeItems = (await kv.list('resume:*', true)) as KVItem[] | string[] | undefined;
 
-        {resumes.length > 0 && (
-          <div className="resumes-section w-full">
-            {resumes.map((resume) => (
-              <ResumeCard key={resume.id} resume={resume} />
-            ))}
-          </div>
+      const parsedResumes = (resumeItems || [])
+        .map((item) => {
+          try {
+            const value = typeof item === 'string' ? item : item.value;
+            return JSON.parse(value) as Resume;
+          } catch {
+            return null;
+          }
+        })
+        .filter(Boolean) as Resume[];
+
+      setResumes(parsedResumes);
+      setLoadingResumes(false);
+    };
+
+    loadResumes();
+  }, [auth.isAuthenticated, kv]);
+
+  return <main className="bg-[url('/images/bg-main.svg')] bg-cover">
+    <Navbar />
+
+    <section className="main-section">
+      <div className="page-heading py-16">
+        <h1>Track Your Applications & Resume Ratings</h1>
+        {!loadingResumes && resumes?.length === 0 ? (
+            <h2>No resumes found. Upload your first resume to get feedback.</h2>
+        ): (
+          <h2>Review your submissions and check AI-powered feedback.</h2>
         )}
-      </section>
-    </main>
-  );
+      </div>
+      {loadingResumes && (
+          <div className="flex flex-col items-center justify-center">
+            <img src="/images/resume-scan-2.gif" className="w-[200px]" />
+          </div>
+      )}
+
+      {!loadingResumes && resumes.length > 0 && (
+        <div className="resumes-section">
+          {resumes.map((resume) => (
+              <ResumeCard key={resume.id} resume={resume} />
+          ))}
+        </div>
+      )}
+
+      {!loadingResumes && resumes?.length === 0 && (
+          <div className="flex flex-col items-center justify-center mt-10 gap-4">
+            <Link to="/upload" className="primary-button w-fit text-xl font-semibold">
+              Upload Resume
+            </Link>
+          </div>
+      )}
+    </section>
+  </main>
 }

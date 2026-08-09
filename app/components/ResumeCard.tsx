@@ -1,38 +1,66 @@
-import { Link } from "react-router";
-import ScoreCircle from "./ScoreCircle";
+import {Link} from "react-router";
+import ScoreCircle from "~/components/ScoreCircle";
+import {useEffect, useState} from "react";
+import {usePuterStore} from "~/lib/puter";
 
 const ResumeCard = ({ resume: { id, companyName, jobTitle, feedback, imagePath } }: { resume: Resume }) => {
-    const fallbackSrc = "/images/pdf.png";
+    const { fs } = usePuterStore();
+    const [resumeUrl, setResumeUrl] = useState('');
 
-    // normalize image path: allow absolute URLs or paths served from public/
-    const src = imagePath
-        ? (imagePath.startsWith("http") || imagePath.startsWith("/") ? imagePath : `/${imagePath}`)
-        : fallbackSrc;
+    useEffect(() => {
+        let objectUrl: string | null = null;
+
+        const loadResume = async () => {
+            const blob = await fs.read(imagePath);
+            if (blob) {
+                objectUrl = URL.createObjectURL(blob);
+                setResumeUrl(objectUrl);
+                return;
+            }
+
+            if (imagePath.startsWith('/')) {
+                setResumeUrl(imagePath);
+            }
+        };
+
+        loadResume();
+
+        return () => {
+            if (objectUrl) {
+                URL.revokeObjectURL(objectUrl);
+            }
+        };
+    }, [imagePath, fs]);
+
+    const score = feedback?.overallScore ?? 0;
+    const badgeLabel = feedback ? `${score}/100` : 'Processing';
 
     return (
-        <Link to={`/resumes/${id}`} className="resume-card transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl">
+        <Link to={`/resume/${id}`} className="resume-card animate-in fade-in duration-1000">
             <div className="resume-card-header">
                 <div className="flex flex-col gap-2">
-                    <h2 className="!text-black break-words text-xl font-semibold">
-                        {companyName}
-                    </h2>
-                    <h3 className="break-words text-base text-gray-500">
-                        {jobTitle}
-                    </h3>
+                    {companyName && <h2 className="!text-black font-bold break-words">{companyName}</h2>}
+                    {jobTitle && <h3 className="text-lg break-words text-gray-500">{jobTitle}</h3>}
+                    {!companyName && !jobTitle && <h2 className="!text-black font-bold">Resume</h2>}
                 </div>
                 <div className="flex-shrink-0">
-                    <ScoreCircle score={feedback.overallScore} />
+                    <ScoreCircle score={score} />
+                    {!feedback && (
+                        <p className="text-sm text-gray-500 text-right">Processing</p>
+                    )}
                 </div>
             </div>
-            <div className="gradient-border overflow-hidden rounded-2xl">
-                <div className="w-full">
-                    <img
-                        src={src}
-                        alt="resume"
-                        onError={(e) => { (e.currentTarget as HTMLImageElement).src = fallbackSrc; }}
-                        className="h-[300px] w-full rounded-xl object-cover object-top sm:h-[320px]" />
+            {resumeUrl && (
+                <div className="gradient-border animate-in fade-in duration-1000">
+                    <div className="w-full h-full">
+                        <img
+                            src={resumeUrl}
+                            alt="resume"
+                            className="w-full h-[350px] max-sm:h-[200px] object-cover object-top"
+                        />
+                    </div>
                 </div>
-            </div>
+            )}
         </Link>
     );
 }
