@@ -1,3 +1,12 @@
+### Deployed:
+https://resumyzer-j7qd-lwvnx.puter.site
+
+## wipe data:
+/wipe
+
+
+
+
 # Welcome to React Router!
 
 A modern, production-ready template for building full-stack React applications using React Router.
